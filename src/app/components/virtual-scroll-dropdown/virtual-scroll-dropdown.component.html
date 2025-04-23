@@ -1,0 +1,23 @@
+<div class="dropdown-container">
+  <!-- Dropdown Trigger -->
+  <div class="dropdown-header" (click)="toggleDropdown()">
+    {{ selectedItem ? selectedItem.label : 'Select an option' }}
+    <i class="pi pi-chevron-down"></i>
+  </div>
+
+  <!-- Dropdown Content -->
+  <div class="dropdown-panel" *ngIf="isDropdownOpen">
+    <cdk-virtual-scroll-viewport [itemSize]="itemSize" class="virtual-scroll-viewport"
+      (scrolledIndexChange)="onScroll($event)">
+      <!-- Virtual Scroll Items -->
+      <div *cdkVirtualFor="let item of items" class="dropdown-item" (click)="selectItem(item)">
+        {{ item.label }}
+      </div>
+      <!-- Loading Spinner -->
+      <div class="loading-spinner">
+        <p-progressSpinner strokeWidth="4" class="spinner-sm"></p-progressSpinner>
+      </div>
+    </cdk-virtual-scroll-viewport>
+
+  </div>
+</div>
