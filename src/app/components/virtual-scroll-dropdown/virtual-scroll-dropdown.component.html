@@ -1,23 +1,64 @@
 <div class="dropdown-container">
   <!-- Dropdown Trigger -->
-  <div class="dropdown-header" (click)="toggleDropdown()">
+  <!-- <div class="dropdown-header" (click)="toggleDropdown()">
     {{ selectedItem ? selectedItem.label : 'Select an option' }}
     <i class="pi pi-chevron-down"></i>
+  </div> -->
+  <div class="dropdown-header" (click)="toggleDropdown()">
+    {{ selectedItem ? selectedItem.label : 'Select an option' }}
+    <div class="btns-wrapper">
+      <button *ngIf="selectedItem" class="clear-button" (click)="clearSelection($event)">
+        ✕
+      </button>
+      <i class="pi pi-chevron-down"></i>
+    </div>
   </div>
 
   <!-- Dropdown Content -->
   <div class="dropdown-panel" *ngIf="isDropdownOpen">
-    <cdk-virtual-scroll-viewport [itemSize]="itemSize" class="virtual-scroll-viewport"
+    <!-- Search Input -->
+    <div class="search-container">
+      <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" (input)="onFilterChange()" class="input-field"
+        required>
+    </div>
+
+    <!-- Virtual Scroll with Lazy Loading -->
+    <cdk-virtual-scroll-viewport *ngIf="!group" [itemSize]="itemSize" class="virtual-scroll-viewport"
       (scrolledIndexChange)="onScroll($event)">
-      <!-- Virtual Scroll Items -->
-      <div *cdkVirtualFor="let item of items" class="dropdown-item" (click)="selectItem(item)">
+      <div *cdkVirtualFor="let item of filteredItems" class="dropdown-item"
+        [ngClass]="item.isSelected ? 'highlight' : '' " (click)="selectItem(item)">
         {{ item.label }}
       </div>
-      <!-- Loading Spinner -->
-      <div class="loading-spinner">
+      <div *ngIf="loading" class="loading-spinner">
         <p-progressSpinner strokeWidth="4" class="spinner-sm"></p-progressSpinner>
       </div>
     </cdk-virtual-scroll-viewport>
 
+    <!-- Virtual Scroll with Grouping -->
+    <cdk-virtual-scroll-viewport *ngIf="group" [itemSize]="itemSize" class="virtual-scroll-viewport"
+      (scrolledIndexChange)="onScroll($event)">
+      <ng-container *ngFor="let group of groupedItems">
+        <!-- Group Header -->
+        <div class="dropdown-group-header">
+          {{ group.header }}
+        </div>
+        <!-- Group Items -->
+        <div *ngFor="let item of group.items" class="dropdown-item" [ngClass]="item.isSelected ? 'highlight' : '' "
+          (click)="selectItem(item)">
+          {{ item.label }}
+        </div>
+      </ng-container>
+      <div *ngIf="loading" class="loading-spinner">
+        <p-progressSpinner strokeWidth="4" class="spinner-sm"></p-progressSpinner>
+      </div>
+    </cdk-virtual-scroll-viewport>
+
+    <!-- Loading Spinner -->
   </div>
 </div>
+
+<br>
+<hr>
+<br>
+
+<span>{{selectedItem | json}}</span>
