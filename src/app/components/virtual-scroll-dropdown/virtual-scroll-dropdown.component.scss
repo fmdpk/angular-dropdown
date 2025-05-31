@@ -6,12 +6,21 @@
 .dropdown-header {
   display: flex;
   justify-content: space-between;
+  gap: 6px;
   align-items: center;
   padding: 10px;
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 4px;
   cursor: pointer;
+  .items-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    gap: 6px;
+    align-items: center;
+    max-width: 240px;
+    overflow-x: auto;
+  }
 }
 
 .dropdown-header i {
@@ -128,4 +137,21 @@
   align-items: center;
   gap: 8px;
   justify-content: flex-end;
+}
+
+.multiple-selected-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background-color: #0529f81c;
+  gap: 4px;
+  .multiple-selected-item-text {
+    width: max-content;
+  }
+  .multiple-selected-item-remove {
+    border-left: 1px solid #d3d3d3;
+    padding-left: 4px;
+  }
 }

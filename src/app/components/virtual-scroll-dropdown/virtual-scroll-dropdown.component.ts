@@ -6,11 +6,13 @@ import { Component, HostListener, Input, OnInit } from '@angular/core';
   styleUrls: ['./virtual-scroll-dropdown.component.scss'],
 })
 export class VirtualScrollDropdownComponent {
-  @Input('group') group: boolean = true;
+  @Input('group') group: boolean = false;
+  @Input('multiple') multiple: boolean = true;
 
   items: any[] = []; // Data currently visible in the viewport
   allItems: any[] = []; // Full dataset fetched from the server (simulate backend)
   selectedItem: any = null; // Selected item
+  selectedItems: any[] = []; // Selected item
   isDropdownOpen = false; // Dropdown open/close state
   loading = false; // Flag to display the loading spinner
   itemSize = 40; // Height of each item in pixels for virtual scrolling
@@ -115,6 +117,28 @@ export class VirtualScrollDropdownComponent {
     this.isDropdownOpen = false;
   }
 
+  selectMultipleItem(item: any, event: any) {
+    if (this.loading) {
+      return;
+    }
+    event.preventDefault();
+    item.isSelected = !item.isSelected;
+    if (item.isSelected) {
+      let flag = this.selectedItems.find(
+        (element) => item.value === element.value
+      );
+      if (!flag) {
+        this.selectedItems.push(item);
+      }
+    } else {
+      this.selectedItems = this.selectedItems.filter(
+        (element) => element.value !== item.value
+      );
+    }
+    console.log(item);
+    console.log(this.selectedItems);
+  }
+
   unSelectPreviousItem() {
     let index = this.items.findIndex(
       (elem) => this.selectedItem.value === elem.value
@@ -126,6 +150,13 @@ export class VirtualScrollDropdownComponent {
     event.stopPropagation(); // Prevent closing the dropdown
     this.unSelectPreviousItem();
     this.selectedItem = null;
+  }
+
+  removeItem(item: any) {
+    this.selectedItems = this.selectedItems.filter(
+      (element) => element.value !== item.value
+    );
+    this.items[item.value].isSelected = false;
   }
 
   @HostListener('document:click', ['$event'])
